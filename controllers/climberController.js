@@ -5,23 +5,25 @@ const { Climber } = require('../models/ClimberModel')
 //create router 
 const router = express.Router();
 //import err library from sqlize
-const { UniqueContraintError } = require('sequelize/lib/errors');
+const { UniqueConstraintError } = require('sequelize/lib/errors');
 //importing our installs/depencies
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-//==================
-//CLIMBER SIGN UP 
-//==================
 
 router.get('/', async (req, res) => {
     res.send("test")
 })
 
+//==================
+//CLIMBER SIGN UP 
+//==================
+
 //justin added username in the params and didnt declare req.body.user
 router.post('/create', async (req, res) => {
-    res.send("trying to create climber");
+    //res.send("trying to create climber");
     let { username, password } = req.body.climber;
+    
     try {
         const newClimber = await Climber.create({
             //the username value is diff than in wol and grocery
@@ -29,7 +31,12 @@ router.post('/create', async (req, res) => {
             password: bcrypt.hashSync(password, 14),
         });
         
-        let token = jwt.sign({ id: newClimber.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 12 });
+        let token = jwt.sign(
+            {
+            id: newClimber.id
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: 60 * 60 * 12 });
         
         res.status(201).json({
             message: "Dope, you're all signed up",

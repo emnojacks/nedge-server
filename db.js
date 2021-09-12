@@ -1,7 +1,5 @@
-const { Sequelize } = require('sequelize');
-//imports sequlize pckg and 
-
-//creates instance of sql as an obj (calling it db)
+const Sequelize  = require('sequelize');
+//imports sequlize pckg and creates instance of sql as an obj (calling it db) below
 //passing in all the params separately that are needed to connect and stored in secret file
 const db = new Sequelize(
     process.env.DB_DBNAME,
