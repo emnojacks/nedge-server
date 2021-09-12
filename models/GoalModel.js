@@ -14,10 +14,7 @@ const Goal = db.define('goal', {
     },
     goalachieved: {
         type: DataTypes.BOOLEAN,
-    },
-    climberid: {
-        type: DataTypes.INTEGER
-    },
+    }
 });
 
 module.exports = Goal;
