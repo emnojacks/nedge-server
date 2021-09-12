@@ -17,31 +17,29 @@
 // const Session = DefineSession(db, DataTypes) 
 
 const Climber = require('./ClimberModel')
-//const Goal = require('./GoalModel')
-//const Session = require('./SessionModel')
+const Goal = require('./GoalModel')
+const Session = require('./SessionModel')
 
 
 //new
 // Define Associations
 
 // Climber Model Ass'ns
-// Climber.hasMany(Goal)
-// Climber.hasMany(Session)
+Climber.hasMany(Goal)
+Climber.hasMany(Session)
 
 // //Goal Model Ass'ns
-// Goal.belongsTo(Climber)
-// Goal.hasOne(Climber)
-// Goal.belongsTo(Session)
+Goal.belongsTo(Climber)
+//Goal.hasOne(Climber)
+Goal.belongsTo(Session)
 
 // //Session model Ass'ns
-// Session.belongsTo(Climber)
-// Session.hasOne(Climber)
-// Session.hasMany(Goal)
+Session.belongsTo(Climber)
+//Session.hasOne(Climber)
+Session.hasMany(Goal)
 
 // Sync
 //syncDb(db, { alter:true })
 
 //same
-module.exports = { Climber }
-
-// module.exports = { Climber, Goal, Session }
+module.exports = { Climber, Goal, Session }

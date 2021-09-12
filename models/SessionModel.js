@@ -7,7 +7,7 @@ const db = require('../db');
             allowNull: false,
         },
         sessionlength: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.FLOAT,
             allowNull: false,
         },
         //one day you could make this string and log the person u climbed with 
@@ -25,19 +25,19 @@ const db = require('../db');
             allowNull: false,
         },
         sleepcondition: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         stresscondition: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         egocondition: {
-            type: DataTypes.NUMBER,
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
         climberid: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
         },
         //optional but incld in req body
         sessionnotes: {

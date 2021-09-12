@@ -1,23 +1,23 @@
 
-// const {DataTypes} = require('sequelize')
-// const db = require('../db');
+const {DataTypes} = require('sequelize')
+const db = require('../db');
 
 
-// const Goal = db.define('goal', {
-//     goaldescription: {
-//         type: DataTypes.STRING(100),
-//         allowNull: false,
-//     },
-//     goalpriority: {
-//         type: DataTypes.STRING(100),
-//         allowNull: false,
-//     },
-//     climberid: {
-//         type: DataTypes.INTEGER
-//     },
-//     goalachieved: {
-//         type: DataTypes.BOOLEAN,
-//     }
-// });
+const Goal = db.define('goal', {
+    goaldescription: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    goalpriority: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    goalachieved: {
+        type: DataTypes.BOOLEAN,
+    },
+    climberid: {
+        type: DataTypes.INTEGER
+    },
+});
 
-// module.exports = Goal;
+module.exports = Goal;
