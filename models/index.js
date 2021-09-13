@@ -26,21 +26,26 @@ const Session = require('./SessionModel')
 
 // Climber Model Ass'ns
 Climber.hasMany(Goal)
+//     , {
+//     foreignKey: {
+//         allowNull: false
+//     }
+// })
+
 Climber.hasMany(Session)
+// {
+//     foreignKey: {
+//         allowNull: false
+//this would require all sessions to belong to a goal and we don't want to impose that constraint on users 
+//     }
+    // }
 
 // //Goal Model Ass'ns
-Goal.belongsTo(Climber, {
-    foreignKey: {
-        allowNull: false
-    }
-});
+Goal.belongsTo(Climber)
 
 // //Session model Ass'ns
-Session.belongsTo(Climber, {
-    foreignKey: {
-        allowNull: false
-    }
-})
+Session.belongsTo(Climber)
+
 Session.belongsTo(Goal)
 
 // Sync

@@ -36,10 +36,8 @@ const validateJWT = async(req, res, next) => {
             console.log("foundClimber-->", foundClimber);
             if (foundClimber) {
                 console.log("request-->", req);
-                //when you use dot notation on the lefthand side, you are
-                //creating a new property and anything on the right is a new prop
                 //this creates user and sets it to founduser
-                req.user = foundClimber;
+                req.climber = foundClimber;
                 next();
             } else {
                 res.status(400).send({

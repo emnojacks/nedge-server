@@ -8,13 +8,6 @@ const router = express.Router();
 let validateJWT = require('../middleware/validateJWT')
 
 
-// router.get('/', validateJWT, async (req, res) => {
-//     if (validateJWT) {
-//         res.send('passed');
-//     }
-// })
-
-
 //======================================
 //GET ALL GOALS FOR ALL CLIMBERS
 //======================================
@@ -36,8 +29,13 @@ router.get('/', validateJWT, async (req, res) => {
 //=====================================
 
 router.get('/', validateJWT, async (req, res) => {
+    const { climberid } = req.climber;
     try {
-        const existingGoals = await Goal.findAll();
+        const existingGoals = await Goal.findAll({
+            where: {
+                climberid: climberid
+            }
+        });
         res.status(302).json({
             message: "Here are all climber's goals",
             existingGoals,
@@ -51,17 +49,16 @@ router.get('/', validateJWT, async (req, res) => {
 //CREATE NEW GOAL
 //==================
 router.post('/create', validateJWT, async (req, res) => {
-    let {
+    const { climberid } = req.climber;
+    const {
         goaldescription,
         goalpriority,
     } = req.body.goal;
     
-    //const {id} = req.climber;
-    
     const newGoal = {
         goaldescription,
         goalpriority,
-       // climberId: id
+        climberid: climberid
     }
     
     try {

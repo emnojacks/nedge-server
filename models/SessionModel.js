@@ -40,7 +40,11 @@ const db = require('../db');
         sessionnotes: {
             type: DataTypes.STRING,
             allowNull: true,
-        }
+        },
+        climberid: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }, 
     });
 
 module.exports = Session;
