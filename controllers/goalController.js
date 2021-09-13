@@ -28,16 +28,16 @@ router.get('/', validateJWT, async (req, res) => {
 //GET ALL GOALS FOR LOGGED IN CLIMBER
 //=====================================
 
-router.get('/', validateJWT, async (req, res) => {
-    const { climberid } = req.climber;
+router.get('/mine', validateJWT, async (req, res) => {
+    const { id } = req.climber;
     try {
         const existingGoals = await Goal.findAll({
             where: {
-                climberid: climberid
+                climberid: id
             }
         });
         res.status(302).json({
-            message: "Here are all climber's goals",
+            message: "Here your climbing goals",
             existingGoals,
         });
     } catch (err) {
@@ -49,7 +49,8 @@ router.get('/', validateJWT, async (req, res) => {
 //CREATE NEW GOAL
 //==================
 router.post('/create', validateJWT, async (req, res) => {
-    const { climberid } = req.climber;
+    const { id } = req.climber;
+    
     const {
         goaldescription,
         goalpriority,
@@ -58,7 +59,7 @@ router.post('/create', validateJWT, async (req, res) => {
     const newGoal = {
         goaldescription,
         goalpriority,
-        climberid: climberid
+        climberid: id
     }
     
     try {
@@ -76,16 +77,60 @@ router.post('/create', validateJWT, async (req, res) => {
 //==================
 //UPDATE GOAL
 //==================
-router.put('/update/:', validateJWT, async (req, res) => {
-    res.send("create goal test");
+router.put('/update/:id', validateJWT, async (req, res) => {
+    const {
+        goaldescription,
+        goalpriority,
+        goalachieved
+    } = req.body.goal;
     
+    const updateQuery = {
+        where: {
+            id: req.params.id,
+            climberid: req.climber.id
+        },
+    };  
+    const updatedGoal = {
+        goaldescription: goaldescription,
+        goalpriority: goalpriority,
+        goalachieved: goalachieved,
+    };
+    try {
+        const updateExistingGoal = await Goal.update(updatedGoal, updateQuery);
+        res.status(202).json({
+            message: "climber goals successfully updated",
+            updatedGoal
+        });
+    } catch (err) {
+        res.status(304).json({
+            message: "Couldnt update your goals at this time",
+            error: err.message
+        })
+    }
 })
 
 //==================
 //DELETE GOAL
 //==================
-router.delete('/delete/:', validateJWT,async (req, res) => {
-    res.send("create goal test")
-})
+router.delete('/delete/:id', validateJWT, async (req, res) => {
+    try {
+        const deleteQuery = {
+            where: {
+                id: req.params.id,
+                climberid: req.climber.id
+            }
+        };
+        await Goal.destroy(deleteQuery);
+        res.status(200).json({
+            message: "climber goal deleted",
+            deleteQuery
+        });
+    } catch (err) {
+        res.status(304).json({
+            message: "Couldnt delete goal at this time",
+            error: err.message
+        });
+    }
+});
 
 module.exports = router; 
