@@ -1,5 +1,5 @@
 module.exports = {
     climberController: require('./climberController'),
-    //goalController: require('./goalController'),
+    goalController: require('./goalController'),
     //sessionController: require('./sessionController')
 };

@@ -13,7 +13,7 @@ app.use(express.json());
 
 //setting up base URLS
 app.use('/climber', controllers.climberController);
-//app.use('/goal', controllers.goalController);
+app.use('/goal', controllers.goalController);
 //app.use('/session', controllers.sessionController);
 
 //authenticate then sync all tables/models in database

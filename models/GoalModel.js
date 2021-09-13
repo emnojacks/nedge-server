@@ -14,7 +14,9 @@ const Goal = db.define('goal', {
     },
     goalachieved: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
     }
+    //climberId
 });
 
 module.exports = Goal;

@@ -29,14 +29,19 @@ Climber.hasMany(Goal)
 Climber.hasMany(Session)
 
 // //Goal Model Ass'ns
-Goal.belongsTo(Climber)
-//Goal.hasOne(Climber)
-Goal.belongsTo(Session)
+Goal.belongsTo(Climber, {
+    foreignKey: {
+        allowNull: false
+    }
+});
 
 // //Session model Ass'ns
-Session.belongsTo(Climber)
-//Session.hasOne(Climber)
-Session.hasMany(Goal)
+Session.belongsTo(Climber, {
+    foreignKey: {
+        allowNull: false
+    }
+})
+Session.belongsTo(Goal)
 
 // Sync
 //syncDb(db, { alter:true })

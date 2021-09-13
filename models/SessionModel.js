@@ -36,9 +36,6 @@ const db = require('../db');
             type: DataTypes.SMALLINT,
             allowNull: false,
         },
-        climberid: {
-            type: DataTypes.SMALLINT,
-        },
         //optional but incld in req body
         sessionnotes: {
             type: DataTypes.STRING,
