@@ -114,17 +114,21 @@ router.put('/update/:id', validateJWT, async (req, res) => {
 //==================
 router.delete('/delete/:id', validateJWT, async (req, res) => {
     try {
-        const deleteQuery = {
-            where: {
-                id: req.params.id,
-                climberid: req.climber.id
-            }
-        };
+        const deleteQuery =
+            //maybe remove the find one argument bc it's not working
+            await Goal.findOne({
+                where: {
+                    id: req.params.id,
+                    climberid: req.climber.id
+                },
+            });
+        if (deleteQuery) {
         await Goal.destroy(deleteQuery);
-        res.status(200).json({
+            res.status(200).json({
             message: "climber goal deleted",
             deleteQuery
         });
+        }
     } catch (err) {
         res.status(304).json({
             message: "Couldnt delete goal at this time",
