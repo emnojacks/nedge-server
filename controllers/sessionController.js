@@ -8,12 +8,11 @@ const router = express.Router();
 let validateJWT = require('../middleware/validateJWT')
 
 
-//==================
-//GET ALL SESSIONS 
-//==================
+//====================================
+//GET ALL SESSIONS - ADMIN ACCESS ONLY
+//====================================
 
 router.get('/', validateJWT, async (req, res) => {
-    res.send("test get session endpoint");
     console.log("retrieving all sessions");
     try {
         const existingSessions = await Session.findAll();
@@ -66,15 +65,15 @@ router.post('/create', validateJWT, async (req, res) => {
     } = req.body.session;
     
     const newSession = {
-        sessionsuccessful:sessionsuccessful,
-        sessionlength:sessionlength,
-        sessionpartner:sessionpartner,
+        sessionsuccessful: sessionsuccessful,
+        sessionlength: sessionlength,
+        sessionpartner: sessionpartner,
         crosstraining:crosstraining,
         nutritioncondition: nutritioncondition,
         sleepcondition: sleepcondition,
         stresscondition: stresscondition,
-        egocondition:egocondition,
-        sessionnotes:sessionnotes,
+        egocondition: egocondition,
+        sessionnotes: sessionnotes,
         climberid: id,
     }
     try {
@@ -92,7 +91,9 @@ router.post('/create', validateJWT, async (req, res) => {
 //==================
 //UPDATE SESSION
 //==================
-router.put('/update/:id', validateJWT, async (req, res) => {
+router.put('/update/:sessionid', validateJWT, async (req, res) => {
+    const sessionid = req.params.id;
+    
     const {
         sessionsuccessful,
         sessionlength,
@@ -107,7 +108,7 @@ router.put('/update/:id', validateJWT, async (req, res) => {
     
     const updateQuery = {
         where: {
-            id: req.params.id,
+            id: sessionid,
             climberid: req.climber.id
         },
     };  
@@ -126,7 +127,7 @@ router.put('/update/:id', validateJWT, async (req, res) => {
     try {
         const updateExistingSession = await Session.update(updatedSession, updateQuery);
         res.status(202).json({
-            message: "session successfully updated",
+            message: "session successfully updated if it existed",
             updatedSession
         });
     } catch (err) {
@@ -143,13 +144,12 @@ router.put('/update/:id', validateJWT, async (req, res) => {
 router.delete('/delete/:id', validateJWT, async (req, res) => {
     try {
         const deleteQuery =
-            //maybe remove the find one argument bc it's not working
-            await Session.findOne({
+        {
                 where: {
                     id: req.params.id,
                     climberid: req.climber.id
                 },
-            });
+         };
         if (deleteQuery) {
         await Session.destroy(deleteQuery);
             res.status(200).json({

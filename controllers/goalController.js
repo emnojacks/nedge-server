@@ -9,7 +9,7 @@ let validateJWT = require('../middleware/validateJWT')
 
 
 //======================================
-//GET ALL GOALS FOR ALL CLIMBERS
+//GET ALL GOALS FOR ALL CLIMBERS - ADMIN ACCESS ONLY
 //======================================
 
 router.get('/', validateJWT, async (req, res) => {
@@ -77,7 +77,10 @@ router.post('/create', validateJWT, async (req, res) => {
 //==================
 //UPDATE GOAL
 //==================
-router.put('/update/:id', validateJWT, async (req, res) => {
+router.put('/update/:goalid', validateJWT, async (req, res) => {
+    const climberid = req.climber.id;
+    const goalid = req.params.id;
+    
     const {
         goaldescription,
         goalpriority,
@@ -86,8 +89,8 @@ router.put('/update/:id', validateJWT, async (req, res) => {
     
     const updateQuery = {
         where: {
-            id: req.params.id,
-            climberid: req.climber.id
+            id: goalid,
+            climberid: climberid
         },
     };  
     const updatedGoal = {
@@ -98,7 +101,7 @@ router.put('/update/:id', validateJWT, async (req, res) => {
     try {
         const updateExistingGoal = await Goal.update(updatedGoal, updateQuery);
         res.status(202).json({
-            message: "climber goals successfully updated",
+            message: "climber goal successfully updated if it existed",
             updatedGoal
         });
     } catch (err) {
@@ -113,19 +116,21 @@ router.put('/update/:id', validateJWT, async (req, res) => {
 //DELETE GOAL
 //==================
 router.delete('/delete/:id', validateJWT, async (req, res) => {
+    const climberid = req.climber.id;
+    const goalid = req.params.id;
     try {
-        const deleteQuery =
-            //maybe remove the find one argument bc it's not working
-            await Goal.findOne({
-                where: {
-                    id: req.params.id,
-                    climberid: req.climber.id
-                },
-            });
+        const deleteQuery = await {
+            //currently its deleting entries successfully even if they don't exist
+            //they wont delete goals that don't belong to them
+            where: {
+                id: goalid,
+                climberid: climberid
+            }
+    }
         if (deleteQuery) {
         await Goal.destroy(deleteQuery);
             res.status(200).json({
-            message: "climber goal deleted",
+            message: "if it existed, the climber goal was deleted",
             deleteQuery
         });
         }

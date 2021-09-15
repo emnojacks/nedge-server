@@ -29,7 +29,8 @@ router.post('/create', async (req, res) => {
       
         let token = jwt.sign(
             {
-            id: newClimber.id
+                id: newClimber.id,
+                //isAdmin: newClimber.isAdmin
             },
             process.env.JWT_SECRET,
             { expiresIn: 60 * 60 * 12 });
