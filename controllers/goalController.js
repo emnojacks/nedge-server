@@ -77,7 +77,7 @@ router.post('/create', validateJWT, async (req, res) => {
 //==================
 //UPDATE GOAL
 //==================
-router.put('/update/:goalid', validateJWT, async (req, res) => {
+router.put('/update/:id', validateJWT, async (req, res) => {
     const climberid = req.climber.id;
     const goalid = req.params.id;
     
@@ -118,21 +118,32 @@ router.put('/update/:goalid', validateJWT, async (req, res) => {
 router.delete('/delete/:id', validateJWT, async (req, res) => {
     const climberid = req.climber.id;
     const goalid = req.params.id;
+    
     try {
-        const deleteQuery = await {
-            //currently its deleting entries successfully even if they don't exist
-            //they wont delete goals that don't belong to them
+        const existingGoal = await Goal.findOne({
             where: {
-                id: goalid,
-                climberid: climberid
+            id: req.params.id
+        }
+         })
+        if (existingGoal) {
+            const deleteQuery = {
+            //currently its deleting entries successfully but also saying it does even if they don't exist
+            //they wont delete goals that don't belong to them
+                where: {
+                    id: goalid,
+                    climberid: climberid
             }
-    }
-        if (deleteQuery) {
+        }
         await Goal.destroy(deleteQuery);
             res.status(200).json({
-            message: "if it existed, the climber goal was deleted",
+            message: "goal found and deleted",
             deleteQuery
         });
+        }
+        else {
+            res.status(404).json({
+            message: "that goal does not exist"
+            })
         }
     } catch (err) {
         res.status(304).json({
