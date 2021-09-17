@@ -27,10 +27,6 @@ const Climber = db.define("climber", {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    experiencelevel: {
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
     location: {
         type: DataTypes.STRING,
         allowNull: true,
