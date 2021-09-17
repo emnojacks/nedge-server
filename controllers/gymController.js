@@ -9,35 +9,39 @@ const { UniqueConstraintError } = require('sequelize/lib/errors');
 //importing our unique installs/depencies
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-let validateAdminJWT = require('../middleware/validateAdminJWT')
+let validateAdminJWT = require('../middleware/validateAdminJWT');
+const { Sequelize } = require('sequelize/types');
 
 //==================
 //GYM ADMIN SIGN UP 
 //==================
 router.post('/create', async (req, res) => {
-    let { username, password } = req.body.gym;
+    let { gymcode, password, email, gymname, location } = req.body.gym;
     try {
         const newGym = await Gym.create({
-            username,
+            gymcode,
             password: bcrypt.hashSync(password, 14),
+            email,
+            gymname,
+            location,
         });
       
         let token = jwt.sign(
             {
-                id: newGym.id,
+                id: newGym.id, gymcode: newGym.gymcode
             },
             process.env.JWT_SECRET,
             { expiresIn: 60 * 60 * 12 });
    
         res.status(201).json({
-            message: "Dope, you're all signed up",
+            message: "Welcome Gym Admin!",
             gym: newGym,
             sessionToken: token
         });
     } catch (err) {
         if (err instanceof UniqueConstraintError) {
             res.status(409).json({
-                message: "Be more unique - username already in use. Or maybe you've signed up before - try logging in.",
+                message: "Email already in use. Maybe you've signed up before - try logging in.",
             });
         } else {
             res.status(500).json({
@@ -52,12 +56,12 @@ router.post('/create', async (req, res) => {
 //==================
 
 router.post('/login', async (req, res) => {
-    let { username, password } = req.body.gym;
+    let { email, password } = req.body.gym;
     
     try {
         const existingGym = await Gym.findOne({
             where: {
-                username: username,
+                email: email,
             },
         });
         
@@ -66,7 +70,7 @@ router.post('/login', async (req, res) => {
             let passwordCompare = await bcrypt.compare(password, existingGym.password);
             
             if (passwordCompare) {
-                let token = jwt.sign({ id: existingGym.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 12 });
+                let token = jwt.sign({ id: existingGym.id, gymcode: existingGym.gymcode  }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 12 });
                 res.status(200).json({
                     gym: existingGym,
                     message: "Rad. You're in!",
@@ -116,14 +120,14 @@ router.get('/all_climbers', validateAdminJWT, async (req, res) => {
 //GET ALL CLIMBERS AT YOUR GYM- ADMIN ACCESSS ONLY 
 //===================================
 
-router.get('/all_climbers', validateAdminJWT, async (req, res) => {
+router.get('/gym_climbers', validateAdminJWT, async (req, res) => {
     const gymname = req.gym.gymname;
     
     try {
         const allClimbers = await Climber.findAll({
             where: {
                 gymname: gymname
-            }
+            }, include: "goals", "sessions"
         });
         if (allClimbers) {
             res.status(444).json({
@@ -172,5 +176,6 @@ router.get('all_goals/', validateAdminJWT, async (req, res) => {
         res.status(404).json({ error: err.message })
     }
 });
+
 
 module.exports = router; 

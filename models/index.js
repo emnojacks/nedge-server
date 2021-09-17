@@ -49,8 +49,9 @@ Session.belongsTo(Goal)
 //may not need this last ass'n
 
 
-Gym.hasMany(Climber)
-Climber.belongsTo(Gym)
+// Gym.hasMany(Climber)
+// Climber.belongsTo(Gym)
+
 // Sync
 //syncDb(db, { alter:true })
 

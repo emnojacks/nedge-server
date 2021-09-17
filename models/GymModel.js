@@ -1,12 +1,12 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes, Sequelize } = require('sequelize')
 const db = require('../db');
 
 
 const Gym = db.define("gym", {
-    username: {
-        type: DataTypes.STRING,
+    gymcode: {
+        type: DataTypes.UUIDV4,
         allowNull: false,
-        unique: true,
+        defaultValue: Sequelize.UUIDV4
     },
     password: {
         type: DataTypes.STRING,
@@ -18,11 +18,11 @@ const Gym = db.define("gym", {
     },
     gymname: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     },
     location: {
         type: DataTypes.STRING,
-        allowNull: true,
+        allowNull: false,
     }
 });
 

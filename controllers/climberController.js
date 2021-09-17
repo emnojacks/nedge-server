@@ -9,13 +9,12 @@ const { UniqueConstraintError } = require('sequelize/lib/errors');
 //importing our unique installs/depencies
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-
+const validateJWT = require('../middleware/validateJWT')
 
 //==================
 //CLIMBER SIGN UP 
 //==================
 
-//justin added username in the params and didnt declare req.body.user
 router.post('/create', async (req, res) => {
     //res.send("trying to create climber");
     let { username, password } = req.body.climber;
@@ -79,19 +78,64 @@ router.post('/login', async (req, res) => {
                 });
             } else {
                 res.status(401).json({
-                    message: "RIP. Incorrect email or password."
+                    message: "RIP. Incorrect username or password."
                 })
             }
             } else {
             res.status(401).json({
-                message: "RIP. Incorrect email or password."
+                message: "RIP. Incorrect username or password."
             });
             }
     } catch (error) {
         res.status(500).json({
-            message: "RIP.  We can't get you into the goal gym"
+            message: "RIP.  We can't get you into nedge"
         })
     }
 });
+
+//==================
+//CLIMBER PROFILE UPDATE 
+//==================
+
+router.put('/profile', validateJWT, async (req, res) => {
+    const climberid = req.climber.id;
+    
+    const {
+        username,
+        gymname,
+        needpartner,
+        experiencelevel,
+        location,
+        isGymAdmin,
+    } = req.body.climber;
+    
+    const updatedProfile = {
+        username: username,
+        gymname: gymname,
+        needpartner: needpartner,
+        experiencelevel: experiencelevel,
+        location: location,
+    };
+    
+    const updateQuery = {
+        where: {
+            climberid: climberid,
+        },
+    };
+    try {
+        const executeProfileUpdate = 
+        await Climber.update(updatedProfile, updateQuery);
+        res.status(202).json({
+            message: "climber profile successfully updated",
+            updatedProfile
+        })
+    }
+     catch (err) {
+        res.status(304).json({
+            message: "Couldnt update your profile at this time",
+            error: err.message
+        })
+    }
+})
 
 module.exports = router; 
