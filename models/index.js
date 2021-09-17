@@ -19,27 +19,40 @@
 const Climber = require('./ClimberModel')
 const Goal = require('./GoalModel')
 const Session = require('./SessionModel')
+const Gym = require('./GymModel')
 
-
-//new
 // Define Associations
+//always in pairs 
 
 // Climber Model Ass'ns
-Climber.hasMany(Goal)
+//source model = climber
+//target model = goal - the foreign key defined in source model (climberId)
+//one to many betwn climber and goal
+//fk defined in target model
+Climber.hasMany(Goal);
+Goal.belongsToMany(Climber, { through: "ClimberGoals" });
+
+
 Climber.hasMany(Session)
-
-// //Goal Model Ass'ns
-Goal.belongsTo(Climber)
-//Goal.hasOne(Climber)
-Goal.belongsTo(Session)
-
-// //Session model Ass'ns
+// {
+//     foreignKey: {
+//         allowNull: false
+//this would require all sessions to belong to a goal and we don't want to impose that constraint on users 
+//     }
+    // }
 Session.belongsTo(Climber)
-//Session.hasOne(Climber)
-Session.hasMany(Goal)
 
+
+//Goal Model Ass'ns
+Goal.hasMany(Session)
+Session.belongsTo(Goal)
+//may not need this last ass'n
+
+
+Gym.hasMany(Climber)
+Climber.belongsTo(Gym)
 // Sync
 //syncDb(db, { alter:true })
 
 //same
-module.exports = { Climber, Goal, Session }
+module.exports = { Climber, Goal, Session, Gym }

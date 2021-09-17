@@ -15,7 +15,7 @@ const Climber = db.define("climber", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    homegym: {
+    gymname: {
         type: DataTypes.STRING,
         allowNull: true,
     },
@@ -34,6 +34,11 @@ const Climber = db.define("climber", {
     location: {
         type: DataTypes.STRING,
         allowNull: true,
+    },
+    isGymAdmin: {
+     type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: false
     },
 });
 

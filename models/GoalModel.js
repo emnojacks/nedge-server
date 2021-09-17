@@ -14,10 +14,12 @@ const Goal = db.define('goal', {
     },
     goalachieved: {
         type: DataTypes.BOOLEAN,
+        defaultValue: false,
     },
     climberid: {
-        type: DataTypes.INTEGER
-    },
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
 });
 
 module.exports = Goal;

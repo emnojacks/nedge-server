@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const { Climber } = require("../models");
+const { Gym } = require("../models");
 
-const validateJWT = async(req, res, next) => {
+const validateAdminJWT = async(req, res, next) => {
     //options is preflight msg prior to post, put, delete, get
     if (req.method == "OPTIONS") {
         //above determines if safe to send (you need a token for any of the HTTP reqs) then next moves us onto next part of reduest
@@ -30,14 +30,14 @@ const validateJWT = async(req, res, next) => {
         if (payload) {
             //sequelize method of findOne to look for climber in our climbers where the ID of the climber in the database
             //matches the id stored in token
-            let foundClimber = await Climber.findOne({
+            let foundGym = await Gym.findOne({
                 where: { id: payload.id }
             });
-            console.log("foundClimber-->", foundClimber);
-            if (foundClimber) {
+            console.log("foundGym-->", foundGym);
+            if (foundGym) {
                 console.log("request-->", req);
                 //this creates user and sets it to founduser
-                req.climber = foundClimber;
+                req.gym = foundGym;
                 next();
             } else {
                 res.status(400).send({
@@ -55,4 +55,4 @@ const validateJWT = async(req, res, next) => {
     }
 };
 
-module.exports = validateJWT;
+module.exports = validateAdminJWT;

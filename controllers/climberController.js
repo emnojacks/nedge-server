@@ -11,10 +11,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 
-router.get('/', async (req, res) => {
-    res.send("test")
-})
-
 //==================
 //CLIMBER SIGN UP 
 //==================
@@ -33,7 +29,7 @@ router.post('/create', async (req, res) => {
       
         let token = jwt.sign(
             {
-            id: newClimber.id
+                id: newClimber.id,
             },
             process.env.JWT_SECRET,
             { expiresIn: 60 * 60 * 12 });
