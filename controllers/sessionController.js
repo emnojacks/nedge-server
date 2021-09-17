@@ -38,6 +38,7 @@ router.post('/create', validateJWT, async (req, res) => {
     
     const {
         sessionsuccessful,
+        sessiondate,
         sessionlength,
         sessionpartner,
         crosstraining,
@@ -49,6 +50,7 @@ router.post('/create', validateJWT, async (req, res) => {
     } = req.body.session;
     
     const newSession = {
+        sessiondate: sessiondate,
         sessionsuccessful: sessionsuccessful,
         sessionlength: sessionlength,
         sessionpartner: sessionpartner,

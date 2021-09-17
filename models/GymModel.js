@@ -6,7 +6,7 @@ const Gym = db.define("gym", {
     gymcode: {
         type: DataTypes.UUID,
         allowNull: false,
-        defaultValue: Sequelize.UUID
+        //defaultValue: Sequelize.UUID
     },
     password: {
         type: DataTypes.STRING,

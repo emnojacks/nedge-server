@@ -2,6 +2,11 @@ const {DataTypes} = require('sequelize')
 const db = require('../db');
 
     const Session = db.define('session', {
+        sessiondate: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+          // type: DataTypes.DATEONLY,
         sessionsuccessful: {
             type: DataTypes.BOOLEAN,
             allowNull: false,

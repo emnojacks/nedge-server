@@ -1,4 +1,4 @@
-//create instance of express
+ //create instance of express
 const express = require('express');
 //import model
 const { Gym, Climber, Session, Goal } = require('../models')
@@ -10,33 +10,40 @@ const { UniqueConstraintError } = require('sequelize/lib/errors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 let validateAdminJWT = require('../middleware/validateAdminJWT');
+const { v1: uuidv1 } = require('uuid');
 
 //==================
 //GYM ADMIN SIGN UP 
 //==================
 router.post('/create', async (req, res) => {
-    let { gymcode, password, email, gymname, location } = req.body.gym;
+    let { password, email, gymname, location } = req.body.gym;
     try {
         const newGym = await Gym.create({
-            gymcode,
+            gymcode: uuidv1(),
             password: bcrypt.hashSync(password, 14),
             email,
             gymname,
             location,
+            
         });
-      
-        let token = jwt.sign(
-            {
-                id: newGym.id, gymcode: newGym.gymcode
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: 60 * 60 * 12 });
+        if (newGym) {
+            let token = jwt.sign(
+                {
+                    id: newGym.id,
+                    gymcode: newGym.gymcode
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: 60 * 60 * 12 });
    
-        res.status(201).json({
-            message: "Welcome Gym Admin!",
-            gym: newGym,
-            sessionToken: token
-        });
+            res.status(201).json({
+                message: "Welcome Gym Admin!",
+                gym: newGym,
+                sessionToken: token
+            });
+        } else {
+            res.status(400).json({
+                message: "Couldn't create admin account!",
+            })}
     } catch (err) {
         if (err instanceof UniqueConstraintError) {
             res.status(409).json({
@@ -133,7 +140,7 @@ router.get('/gym_climbers', validateAdminJWT, async (req, res) => {
         });
         if (allClimbers) {
             res.status(444).json({
-                message: "List of climbers",
+                message: "List of nedge climbers at your gym: ",
                 allClimbers
             })
         }
@@ -167,7 +174,7 @@ router.get('/all_sessions', validateAdminJWT, async (req, res) => {
 //GET ALL GOALS FOR ALL CLIMBERS - ADMIN ACCESS ONLY
 //======================================
 
-router.get('all_goals/', validateAdminJWT, async (req, res) => {
+router.get('/all_goals', validateAdminJWT, async (req, res) => {
     try {
         const existingGoals = await Goal.findAll();
         res.status(302).json({
