@@ -1,28 +1,12 @@
 //create instance of express
 const express = require('express');
 //import models
-const { Goal, Climber } = require('../models')
+const { Goal } = require('../models')
 //create router 
 const router = express.Router();
 //importing our unique installs/depencies
 let validateJWT = require('../middleware/validateJWT')
 
-
-//======================================
-//GET ALL GOALS FOR ALL CLIMBERS - ADMIN ACCESS ONLY
-//======================================
-
-router.get('/', validateJWT, async (req, res) => {
-    try {
-        const existingGoals = await Goal.findAll();
-        res.status(302).json({
-            message: "Here are all climber's goals",
-            existingGoals,
-        });
-    } catch (err) {
-        res.status(404).json({ error: err.message })
-    }
-});
 
 //=====================================
 //GET ALL GOALS FOR LOGGED IN CLIMBER
@@ -87,24 +71,33 @@ router.put('/update/:id', validateJWT, async (req, res) => {
         goalachieved
     } = req.body.goal;
     
-    const updateQuery = {
-        where: {
-            id: goalid,
-            climberid: climberid
-        },
-    };  
     const updatedGoal = {
         goaldescription: goaldescription,
         goalpriority: goalpriority,
         goalachieved: goalachieved,
     };
+    
+    const updateQuery = {
+        where: {
+            id: goalid,
+            climberid: climberid,
+        },
+    };
+    //can't figure out how to make it only find the goal that exists for that climber AND exists in general
     try {
-        const updateExistingGoal = await Goal.update(updatedGoal, updateQuery);
+        const executeGoalUpdate = 
+        await Goal.update(updatedGoal, updateQuery);
         res.status(202).json({
-            message: "climber goal successfully updated if it existed",
+            message: "climber goal successfully updated",
             updatedGoal
-        });
-    } catch (err) {
+        })
+    // }
+    //     else {
+    //         res.status(404).json({
+    //         message: "that goal does not exist"
+    //         })
+    }
+     catch (err) {
         res.status(304).json({
             message: "Couldnt update your goals at this time",
             error: err.message
@@ -122,7 +115,8 @@ router.delete('/delete/:id', validateJWT, async (req, res) => {
     try {
         const existingGoal = await Goal.findOne({
             where: {
-            id: req.params.id
+                id: req.params.id,
+                climberid: climberid
         }
          })
         if (existingGoal) {

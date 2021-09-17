@@ -8,22 +8,6 @@ const router = express.Router();
 let validateJWT = require('../middleware/validateJWT')
 
 
-//====================================
-//GET ALL SESSIONS - ADMIN ACCESS ONLY
-//====================================
-
-router.get('/', validateJWT, async (req, res) => {
-    console.log("retrieving all sessions");
-    try {
-        const existingSessions = await Session.findAll();
-        res.status(302).json({
-            message: "Here are all climber's sessions",
-            existingSessions,
-        });
-    } catch (err) {
-        res.status(404).json({ error: err.message })
-    }
-});
 
 //=====================================
 //GET ALL SESSIONS FOR LOGGED IN CLIMBER
@@ -91,8 +75,9 @@ router.post('/create', validateJWT, async (req, res) => {
 //==================
 //UPDATE SESSION
 //==================
-router.put('/update/:sessionid', validateJWT, async (req, res) => {
+router.put('/update/:id', validateJWT, async (req, res) => {
     const sessionid = req.params.id;
+    const climberid = req.climber.id;
     
     const {
         sessionsuccessful,
@@ -106,14 +91,8 @@ router.put('/update/:sessionid', validateJWT, async (req, res) => {
         sessionnotes
     } = req.body.session;
     
-    const updateQuery = {
-        where: {
-            id: sessionid,
-            climberid: req.climber.id
-        },
-    };  
     const updatedSession = {
-     sessionsuccessful:sessionsuccessful,
+        sessionsuccessful:sessionsuccessful,
         sessionlength:sessionlength,
         sessionpartner:sessionpartner,
         crosstraining:crosstraining,
@@ -122,14 +101,21 @@ router.put('/update/:sessionid', validateJWT, async (req, res) => {
         stresscondition: stresscondition,
         egocondition:egocondition,
         sessionnotes:sessionnotes,
-        climberid: id,
+        // climberid: id,
     };
+    
+    const updateQuery = {
+        where: {
+            id: sessionid,
+            climberid: climberid,
+        },
+    };  
     try {
-        const updateExistingSession = await Session.update(updatedSession, updateQuery);
-        res.status(202).json({
-            message: "session successfully updated if it existed",
-            updatedSession
-        });
+            const executeSessionUpdate = await Session.update(updatedSession, updateQuery);
+            res.status(202).json({
+                message: "session successfully updated if it existed",
+                updatedSession
+            });
     } catch (err) {
         res.status(304).json({
             message: "Couldnt update session at this time",
@@ -142,20 +128,34 @@ router.put('/update/:sessionid', validateJWT, async (req, res) => {
 //DELETE SESSION
 //==================
 router.delete('/delete/:id', validateJWT, async (req, res) => {
+    const climberid = req.climber.id;
+    const sessionid = req.params.id;
+    
     try {
+        const existingSession = await Session.findOne({
+            where: {
+                id: req.params.id,
+                climberid: climberid
+            }
+        })
+        if (existingSession) {
         const deleteQuery =
-        {
+             {
                 where: {
-                    id: req.params.id,
-                    climberid: req.climber.id
-                },
-         };
-        if (deleteQuery) {
+                    id: sessionid,
+                    climberid: climberid,
+                }
+         }  
         await Session.destroy(deleteQuery);
             res.status(200).json({
             message: "climber session deleted",
             deleteQuery
         });
+        }
+        else {
+            res.status(404).json({
+            message: "that session does not exist"
+            })
         }
     } catch (err) {
         res.status(304).json({

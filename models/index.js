@@ -19,7 +19,7 @@
 const Climber = require('./ClimberModel')
 const Goal = require('./GoalModel')
 const Session = require('./SessionModel')
-
+const Gym = require('./GymModel')
 
 // Define Associations
 //always in pairs 
@@ -49,11 +49,10 @@ Session.belongsTo(Goal)
 //may not need this last ass'n
 
 
-
-
-
+Gym.hasMany(Climber)
+Climber.belongsTo(Gym)
 // Sync
 //syncDb(db, { alter:true })
 
 //same
-module.exports = { Climber, Goal, Session }
+module.exports = { Climber, Goal, Session, Gym }

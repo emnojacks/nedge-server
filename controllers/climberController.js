@@ -30,7 +30,6 @@ router.post('/create', async (req, res) => {
         let token = jwt.sign(
             {
                 id: newClimber.id,
-                //isAdmin: newClimber.isAdmin
             },
             process.env.JWT_SECRET,
             { expiresIn: 60 * 60 * 12 });
@@ -91,28 +90,6 @@ router.post('/login', async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message: "RIP.  We can't get you into the goal gym"
-        })
-    }
-});
-
-
-//==================
-//GET ALL CLIMBERS
-//==================
-
-router.get('/', async (req, res) => {
-    try {
-        const allClimbers = await Climber.findAll();
-        if (allClimbers) {
-            res.status(444).json({
-                message: "List of climbers",
-                allClimbers
-            })
-        }
-    } catch (error) {
-        res.status(404).json({
-            message: "Can't find any climbers",
-            error: error.message
         })
     }
 });
