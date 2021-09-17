@@ -4,9 +4,9 @@ const db = require('../db');
 
 const Gym = db.define("gym", {
     gymcode: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         allowNull: false,
-        defaultValue: Sequelize.UUIDV4
+        defaultValue: Sequelize.UUID
     },
     password: {
         type: DataTypes.STRING,

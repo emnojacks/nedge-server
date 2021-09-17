@@ -10,7 +10,6 @@ const { UniqueConstraintError } = require('sequelize/lib/errors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 let validateAdminJWT = require('../middleware/validateAdminJWT');
-const { Sequelize } = require('sequelize/types');
 
 //==================
 //GYM ADMIN SIGN UP 
@@ -127,7 +126,10 @@ router.get('/gym_climbers', validateAdminJWT, async (req, res) => {
         const allClimbers = await Climber.findAll({
             where: {
                 gymname: gymname
-            }, include: "goals", "sessions"
+            },
+            include: {
+                model: Goal,
+            },
         });
         if (allClimbers) {
             res.status(444).json({

@@ -97,8 +97,8 @@ router.post('/login', async (req, res) => {
 //CLIMBER PROFILE UPDATE 
 //==================
 
-router.put('/profile', validateJWT, async (req, res) => {
-    const climberid = req.climber.id;
+router.put('/profile/:id', validateJWT, async (req, res) => {
+    const id = req.climber.id;
     
     const {
         username,
@@ -106,7 +106,7 @@ router.put('/profile', validateJWT, async (req, res) => {
         needpartner,
         experiencelevel,
         location,
-        isGymAdmin,
+        //isGymAdmin,
     } = req.body.climber;
     
     const updatedProfile = {
@@ -119,7 +119,7 @@ router.put('/profile', validateJWT, async (req, res) => {
     
     const updateQuery = {
         where: {
-            climberid: climberid,
+            id: id,
         },
     };
     try {
