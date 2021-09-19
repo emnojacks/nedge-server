@@ -106,7 +106,7 @@ router.put('/profile/:id', validateJWT, async (req, res) => {
         needpartner,
         experiencelevel,
         location,
-        //isGymAdmin,
+        //isAdmin,
     } = req.body.climber;
     
     const updatedProfile = {
