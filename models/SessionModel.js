@@ -13,7 +13,7 @@ const db = require('../db');
         },
         sessionlength: {
             type: DataTypes.REAL,
-            allowNull: false,
+            allowNull: true,
         },
         //one day you could make this string and log the person u climbed with 
         sessionpartner: {
@@ -26,19 +26,19 @@ const db = require('../db');
             allowNull: true,
         },
         nutritioncondition: {
-            type: DataTypes.SMALLINT,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         sleepcondition: {
-            type: DataTypes.SMALLINT,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         stresscondition: {
-            type: DataTypes.SMALLINT,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         egocondition: {
-            type: DataTypes.SMALLINT,
+            type: DataTypes.STRING,
             allowNull: false,
         },
         //optional but incld in req body

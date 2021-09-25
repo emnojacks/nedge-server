@@ -138,4 +138,33 @@ router.put('/profile/:id', validateJWT, async (req, res) => {
     }
 })
 
+
+//==================
+//CLIMBER PROFILE DISPLAY
+//==================
+
+router.get('/profile', validateJWT, async (req, res) => {
+    const id = req.climber.id;
+    try {
+        const climberProfile = 
+            await Climber.findOne({
+                where: {
+                    climberid: id
+                }
+            });
+        if (climberProfile) {
+        res.status(202).json({
+            message: "climber profile found",
+            climberProfile
+        })    
+        }
+    }
+     catch (err) {
+        res.status(304).json({
+            message: "Couldnt fetch your profile at this time",
+            error: err.message
+        })
+    }
+})
+
 module.exports = router; 
