@@ -12,18 +12,23 @@ const bcrypt = require('bcryptjs');
 const validateJWT = require('../middleware/validateJWT')
 
 //==================
-//CLIMBER SIGN UP 
+//CLIMBER SIGN UP & OPTIONALLY CREATING PROFILE 
 //==================
 
 router.post('/create', async (req, res) => {
     //res.send("trying to create climber");
-    let { username, password } = req.body.climber;
+    let { username, password, gymname, location, climbingtype, experiencelevel, needpartner } = req.body.climber;
     console.log('trying')
     try {
         const newClimber = await Climber.create({
             //the username value is diff than in wol and grocery
             username,
             password: bcrypt.hashSync(password, 14),
+            gymname,
+            location,
+            climbingtype,
+            experiencelevel,
+            needpartner
         });
       
         let token = jwt.sign(
@@ -106,6 +111,7 @@ router.put('/profile/:id', validateJWT, async (req, res) => {
         needpartner,
         experiencelevel,
         location,
+        climbingtype
         //isAdmin,
     } = req.body.climber;
     
@@ -114,6 +120,7 @@ router.put('/profile/:id', validateJWT, async (req, res) => {
         gymname: gymname,
         needpartner: needpartner,
         experiencelevel: experiencelevel,
+        climbingtype: climbingtype,
         location: location,
     };
     
@@ -144,23 +151,18 @@ router.put('/profile/:id', validateJWT, async (req, res) => {
 //==================
 
 router.get('/profile', validateJWT, async (req, res) => {
-    const id = req.climber.id;
+    const climberid = req.climber.id;
     try {
         const climberProfile = 
             await Climber.findOne({
                 where: {
-                    climberid: id
+                    id: climberid
                 }
             });
-        if (climberProfile) {
-        res.status(202).json({
-            message: "climber profile found",
-            climberProfile
-        })    
-        }
+        res.status(201).json(climberProfile)
     }
      catch (err) {
-        res.status(304).json({
+        res.status(404).json({
             message: "Couldnt fetch your profile at this time",
             error: err.message
         })
