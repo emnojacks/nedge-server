@@ -10,18 +10,19 @@ const { UniqueConstraintError } = require('sequelize/lib/errors');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 let validateAdminJWT = require('../middleware/validateAdminJWT');
+let validateJWT = require('../middleware/validateJWT');
 const { v1: uuidv1 } = require('uuid');
 
 //==================
 //GYM ADMIN SIGN UP 
 //==================
 router.post('/create', async (req, res) => {
-    let { password, email, gymname, location } = req.body.gym;
+    let { password, username, gymname, location } = req.body.gym;
     try {
         const newGym = await Gym.create({
             gymcode: uuidv1(),
             password: bcrypt.hashSync(password, 14),
-            email,
+            username,
             gymname,
             location,
             
@@ -62,12 +63,12 @@ router.post('/create', async (req, res) => {
 //==================
 
 router.post('/login', async (req, res) => {
-    let { email, password } = req.body.gym;
+    let { username, password } = req.body.gym;
     
     try {
         const existingGym = await Gym.findOne({
             where: {
-                email: email,
+                username: username,
             },
         });
         
@@ -84,12 +85,12 @@ router.post('/login', async (req, res) => {
                 });
             } else {
                 res.status(401).json({
-                    message: "RIP. Incorrect email or password."
+                    message: "RIP. Incorrect usernmame or password."
                 })
             }
             } else {
             res.status(401).json({
-                message: "RIP. Incorrect email or password."
+                message: "RIP. Incorrect username or password."
             });
             }
     } catch (error) {
@@ -104,18 +105,20 @@ router.post('/login', async (req, res) => {
 //GET ALL CLIMBERS - ADMIN ACCESSS ONLY 
 //===================================
 
-router.get('/all_climbers', validateAdminJWT, async (req, res) => {
+router.get('/profiles', validateJWT, async (req, res) => {
+    
+    
     try {
-        const allClimbers = await Climber.findAll();
-        if (allClimbers) {
+        const climberProfiles = await Climber.findAll();
+        if (climberProfiles) {
             res.status(444).json({
                 message: "List of climbers",
-                allClimbers
+                climberProfiles
             })
         }
     } catch (error) {
         res.status(404).json({
-            message: "Can't find any climbers",
+            message: "Can't find any climber profiles",
             error: error.message
         })
     }
@@ -123,7 +126,7 @@ router.get('/all_climbers', validateAdminJWT, async (req, res) => {
 
 
 //===================================
-//GET ALL CLIMBERS AT YOUR GYM- ADMIN ACCESSS ONLY 
+//GET ALL CLIMBERS AT YOUR GYM-ADMIN ACCESSS ONLY 
 //===================================
 
 router.get('/gym_climbers', validateAdminJWT, async (req, res) => {

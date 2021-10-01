@@ -9,8 +9,8 @@ const Goal = db.define('goal', {
         allowNull: false,
     },
     goalpriority: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.INTEGER,
+        allowNull: true,
     },
     goalachieved: {
         type: DataTypes.BOOLEAN,

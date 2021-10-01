@@ -27,11 +27,15 @@ const Climber = db.define("climber", {
         type: DataTypes.STRING,
         allowNull: true,
     },
+    climbingtype: {
+       type: DataTypes.STRING,
+        allowNull: true,
+    },
     location: {
         type: DataTypes.STRING,
         allowNull: true,
     },
-    isGymAdmin: {
+    isAdmin: {
      type: DataTypes.BOOLEAN,
         allowNull: true,
         defaultValue: false

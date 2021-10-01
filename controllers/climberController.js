@@ -12,23 +12,32 @@ const bcrypt = require('bcryptjs');
 const validateJWT = require('../middleware/validateJWT')
 
 //==================
-//CLIMBER SIGN UP 
+//CLIMBER SIGN UP & OPTIONALLY CREATING PROFILE 
 //==================
 
 router.post('/create', async (req, res) => {
     //res.send("trying to create climber");
-    let { username, password } = req.body.climber;
+    let { username, password, gymname, location, climbingtype, experiencelevel, needpartner, isAdmin } = req.body.climber;
     console.log('trying')
     try {
         const newClimber = await Climber.create({
             //the username value is diff than in wol and grocery
             username,
             password: bcrypt.hashSync(password, 14),
+            gymname,
+            location,
+            climbingtype,
+            experiencelevel,
+            needpartner,
+            //added isAdmin in the  req body
+            isAdmin
         });
       
         let token = jwt.sign(
             {
                 id: newClimber.id,
+                //added isAdmin in the jwt token
+                isAdmin: newClimber.isAdmin
             },
             process.env.JWT_SECRET,
             { expiresIn: 60 * 60 * 12 });
@@ -36,7 +45,8 @@ router.post('/create', async (req, res) => {
         res.status(201).json({
             message: "Dope, you're all signed up",
             climber: newClimber,
-            sessionToken: token
+            sessionToken: token,
+            isAdmin: newClimber.isAdmin
         });
     } catch (err) {
         if (err instanceof UniqueConstraintError) {
@@ -74,7 +84,8 @@ router.post('/login', async (req, res) => {
                 res.status(200).json({
                     climber: existingClimber,
                     message: "Rad. You're in!",
-                    sessionToken: token
+                    sessionToken: token,
+                    isAdmin: existingClimber.isAdmin
                 });
             } else {
                 res.status(401).json({
@@ -106,7 +117,8 @@ router.put('/profile/:id', validateJWT, async (req, res) => {
         needpartner,
         experiencelevel,
         location,
-        //isGymAdmin,
+        climbingtype
+        //isAdmin,
     } = req.body.climber;
     
     const updatedProfile = {
@@ -114,6 +126,7 @@ router.put('/profile/:id', validateJWT, async (req, res) => {
         gymname: gymname,
         needpartner: needpartner,
         experiencelevel: experiencelevel,
+        climbingtype: climbingtype,
         location: location,
     };
     
@@ -133,6 +146,30 @@ router.put('/profile/:id', validateJWT, async (req, res) => {
      catch (err) {
         res.status(304).json({
             message: "Couldnt update your profile at this time",
+            error: err.message
+        })
+    }
+})
+
+
+//==================
+//CLIMBER PROFILE DISPLAY
+//==================
+
+router.get('/profile', validateJWT, async (req, res) => {
+    const climberid = req.climber.id;
+    try {
+        const climberProfile = 
+            await Climber.findOne({
+                where: {
+                    id: climberid
+                }
+            });
+        res.status(201).json(climberProfile)
+    }
+     catch (err) {
+        res.status(404).json({
+            message: "Couldnt fetch your profile at this time",
             error: err.message
         })
     }

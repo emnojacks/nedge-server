@@ -12,7 +12,7 @@ const Gym = db.define("gym", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-    email: {
+    username: {
         type: DataTypes.STRING,
         allowNull: false,
     },
