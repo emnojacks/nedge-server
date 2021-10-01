@@ -106,6 +106,8 @@ router.post('/login', async (req, res) => {
 //===================================
 
 router.get('/profiles', validateJWT, async (req, res) => {
+    
+    
     try {
         const climberProfiles = await Climber.findAll();
         if (climberProfiles) {

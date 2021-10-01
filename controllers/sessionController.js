@@ -78,7 +78,8 @@ router.post('/create', validateJWT, async (req, res) => {
 //UPDATE SESSION
 //==================
 router.put('/update/:id', validateJWT, async (req, res) => {
-    const sessionid = req.params.id;
+    const id = req.params.id;
+    //i had the above set to sessionid not id 
     const climberid = req.climber.id;
     
     const {
@@ -103,12 +104,13 @@ router.put('/update/:id', validateJWT, async (req, res) => {
         stresscondition: stresscondition,
         egocondition:egocondition,
         sessionnotes:sessionnotes,
-        // climberid: id,
+        climberid: climberid,
+        // i had the above line commented out and set to "id"
     };
     
     const updateQuery = {
         where: {
-            id: sessionid,
+            id: id,
             climberid: climberid,
         },
     };  
