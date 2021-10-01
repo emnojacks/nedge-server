@@ -2,13 +2,19 @@ const Sequelize  = require('sequelize');
 //imports sequlize pckg and creates instance of sql as an obj (calling it db) below
 //passing in all the params separately that are needed to connect and stored in secret file
 const db = new Sequelize(
-    process.env.DB_DBNAME,
-    process.env.DB_USER,
-    process.env.DB_PASS,
+    // process.env.DB_DBNAME,
+    // process.env.DB_USER,
+    // process.env.DB_PASS,
+    process.env.DATABASE_URL,
     {
-        host: process.env.DB_HOST,
+        // host: process.env.DB_HOST,
         dialect: 'postgres'
         //may need to add "ssl: process.env.ENVIRONMENT === 'production" during heroku deployment
+        ,
+        dialectOptions: {
+            require: true,
+            rejectUnauthorized: false
+        }
     }
 )
 
