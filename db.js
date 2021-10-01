@@ -8,15 +8,15 @@ const db = new Sequelize(
     process.env.DATABASE_URL,
     {
         // host: process.env.DB_HOST,
-        dialect: 'postgres'
-        //may need to add "ssl: process.env.ENVIRONMENT === 'production" during heroku deployment
+        dialect: 'postgres',
+        ssl: process.env.ENVIRONMENT === 'production'
         ,
         dialectOptions: {
             require: true,
             rejectUnauthorized: false
         }
     }
-)
+);
 
 //syncs all models in the db with the current changes to tables at once
 // this is add'ln from blue badge WOL and listo 
