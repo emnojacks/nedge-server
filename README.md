@@ -37,10 +37,9 @@ This db has four models, controllers, and associated tables:
 - Sessions
 - Gym (admin)
 
-The Session and Goal tables are full CRUD. Full CRUD user and admin routes are still in production. Multiple routes are included but still in development for admin roles. There is no front end access to the admin routes that are still in production. 
+The Session and Goal tables are full CRUD. Full CRUD user and admin models and routes are still in production. Multiple routes are included in the source code but still in development for admin roles. There is no front end access to the admin routes that are still in production. 
 
-#### Client Side 
-##### included for reference 
+### Client Side Deets (included for reference)
 
 The client side was created with [Create React App](https://github.com/facebook/create-react-app) template TypeScript. 
 
