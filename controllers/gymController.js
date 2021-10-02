@@ -107,12 +107,10 @@ router.post('/login', async (req, res) => {
 
 router.get('/profiles', validateJWT, async (req, res) => {
     
-    
     try {
         const climberProfiles = await Climber.findAll();
         if (climberProfiles) {
-            res.status(444).json({
-                message: "List of climbers",
+            res.status(200).json({
                 climberProfiles
             })
         }
@@ -129,7 +127,7 @@ router.get('/profiles', validateJWT, async (req, res) => {
 //GET ALL CLIMBERS AT YOUR GYM-ADMIN ACCESSS ONLY 
 //===================================
 
-router.get('/gym_climbers', validateAdminJWT, async (req, res) => {
+router.get('/gym_climbers', validateJWT, async (req, res) => {
     const gymname = req.gym.gymname;
     
     try {
@@ -142,7 +140,7 @@ router.get('/gym_climbers', validateAdminJWT, async (req, res) => {
             },
         });
         if (allClimbers) {
-            res.status(444).json({
+            res.status(200).json({
                 message: "List of nedge climbers at your gym: ",
                 allClimbers
             })
