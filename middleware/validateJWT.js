@@ -13,7 +13,7 @@ const validateJWT = async(req, res, next) => {
         //if the headers include authorization and bearer then 
         //obj deconstruction of authoriazaiton and placement into var called auth
         const { authorization } = req.headers;
-        console.log("authorization -->", authorization);
+        // console.log("authorization -->", authorization);
         //ternary syntax - returns the token if auth contains a truthy value/
         //if auth returns no truthy, then it returns undefined into the payload
         const payload = authorization ?
@@ -33,9 +33,9 @@ const validateJWT = async(req, res, next) => {
             let foundClimber = await Climber.findOne({
                 where: { id: payload.id }
             });
-            console.log("foundClimber-->", foundClimber);
+            // console.log("foundClimber-->", foundClimber);
             if (foundClimber) {
-                console.log("request-->", req);
+                // console.log("request-->", req);
                 //this creates user and sets it to founduser
                 req.climber = foundClimber;
                 next();
