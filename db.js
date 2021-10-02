@@ -22,19 +22,5 @@ const db = new Sequelize(
 // this is add'ln from blue badge WOL and listo 
 //it's defined here in db but not called until model index.js runs
 
-// async function syncDb(db, options){
-//     const { force, alter} = options
-//     try {
-//         if (force)
-//             await db.sync({force: true})
-//         else if (alter)
-//             await db.sync({alter: true})
-//         else
-//             await db.sync()
-//     } catch (err){
-//         console.log(err)
-//     }
-// }
-
 module.exports = db;
 
