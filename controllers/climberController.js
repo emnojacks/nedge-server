@@ -18,7 +18,7 @@ const validateJWT = require('../middleware/validateJWT')
 router.post('/create', async (req, res) => {
     //res.send("trying to create climber");
     let { username, password, gymname, location, climbingtype, experiencelevel, needpartner, isAdmin } = req.body.climber;
-    console.log('trying')
+    console.log('trying to create climber')
     try {
         const newClimber = await Climber.create({
             //the username value is diff than in wol and grocery
@@ -29,7 +29,7 @@ router.post('/create', async (req, res) => {
             climbingtype,
             experiencelevel,
             needpartner,
-            //added isAdmin in the  req body
+            //added isAdmin in the req body
             isAdmin
         });
       
@@ -80,12 +80,14 @@ router.post('/login', async (req, res) => {
             let passwordCompare = await bcrypt.compare(password, existingClimber.password);
             
             if (passwordCompare) {
-                let token = jwt.sign({ id: existingClimber.id }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 12 });
+                //added second param to token here 
+                let token = jwt.sign({ id: existingClimber.id, isAdmin: existingClimber.isAdmin }, process.env.JWT_SECRET, { expiresIn: 60 * 60 * 12 });
                 res.status(200).json({
                     climber: existingClimber,
                     message: "Rad. You're in!",
                     sessionToken: token,
-                    isAdmin: existingClimber.isAdmin
+                    // isAdmin: existingClimber.isAdmin
+                    isAdmin: token
                 });
             } else {
                 res.status(401).json({
@@ -166,6 +168,7 @@ router.get('/profile', validateJWT, async (req, res) => {
                 }
             });
         res.status(201).json(climberProfile)
+        console.log(req.climber.isAdmin)
     }
      catch (err) {
         res.status(404).json({
